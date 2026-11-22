@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>艦棋 サージーク SHAH-SIE_0.0</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="game-shell" aria-label="艦棋 サージーク 対局画面">
+    <section id="title-screen" class="title-screen" aria-labelledby="game-title">
+      <h1 id="game-title"><img class="title-logo" src="asset/ui/title-logo.webp" alt="艦棋 サージーク"></h1>
+      <div class="title-heroes" aria-label="主人公選択">
+        <button type="button" class="title-hero title-hero-left" data-route="shaa" aria-label="主人公siro・シャアルートを選択" aria-pressed="false"><span class="player-indicator"><b>PLAYER</b><i>▼</i></span><img src="asset/sprites/spr_siro_n.webp?v=20261121-142338" alt="主人公 siro"></button>
+        <button type="button" class="title-hero title-hero-right" data-route="sharia" aria-label="主人公28・シャリアルートを選択" aria-pressed="false"><span class="player-indicator"><b>PLAYER</b><i>▼</i></span><img src="asset/sprites/spr_28_n.webp?v=20261121-142338" alt="主人公 28"></button>
+      </div>
+      <button id="title-enter" class="title-enter" type="button">START</button>
+      <div class="title-start-panel">
+        <button id="start-game" type="button" disabled>New Game</button>
+      </div>
+      <nav class="title-tools" aria-label="タイトルメニュー">
+        <button id="open-audio-settings" class="title-tool-button" type="button" aria-label="音声設定" title="音声設定"><svg class="audio-icon audio-icon-on" viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6.5 9H3v6h3.5L11 19V5Z"/><path d="M15 8.5a5 5 0 0 1 0 7"/><path d="M17.8 5.7a9 9 0 0 1 0 12.6"/></svg><svg class="audio-icon audio-icon-muted" viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6.5 9H3v6h3.5L11 19V5Z"/><path d="m15 9 6 6m0-6-6 6"/></svg></button>
+      </nav>
+      <p id="unofficial-notice" class="unofficial-notice">本作品は非公式のファンメイド作品であり、原作・関連企業とは一切関係ありません。</p>
+    </section>
+    <section id="novel-screen" class="novel-screen" hidden aria-label="会話シーン">
+      <img id="novel-background" class="novel-background" alt="">
+      <img id="novel-portrait" class="novel-portrait" alt="対戦相手">
+      <div id="novel-advance" class="novel-advance" aria-hidden="true"></div>
+      <div class="novel-message text-window" data-window="novel"><span class="text-window-art" aria-hidden="true"></span><span id="novel-speaker" class="speaker-name"></span><p id="novel-text"></p><small class="dialogue-indicator">▼</small></div>
+    </section>
+    <header class="stage-bar"><strong id="stage-label">STAGE 1 / 1</strong><div class="status"><span id="turn-display"></span><span id="move-count"></span><span id="cpu-thinking" class="cpu-thinking" hidden>CPU 思考中…</span></div><div id="debug-tools" class="debug-tools" hidden><button id="debug-win" class="debug-win" type="button">強制勝利</button><button id="debug-lose" class="debug-lose" type="button">強制敗北</button><button id="open-debug-menu" class="debug-menu-button" type="button">DEBUG MENU</button></div></header>
+    <section class="black-hand-area hand-frame" aria-label="黒軍の持ち駒置き場"><div id="black-hand" class="hand" aria-label="黒軍の持ち駒"></div></section>
+    <section class="board-area"><div class="board-wrap"><div id="board" class="board" aria-label="10×10盤"></div><div id="col-labels" class="col-labels" aria-hidden="true"></div><div id="row-labels" class="row-labels" aria-hidden="true"></div></div></section>
+    <aside class="character-panel" aria-label="キャラクター表示">
+      <div class="character-placeholder"><span>CHARACTER PLACEHOLDER</span></div>
+      <img id="character-background" class="character-layer character-background" alt="" hidden>
+      <img id="character-portrait" class="character-layer character-portrait" alt="対戦キャラクター" hidden>
+      <div id="sweat-effect" class="sweat-effect" aria-hidden="true"></div>
+    </aside>
+    <section class="white-hand-area hand-frame" aria-label="白軍の持ち駒置き場"><div id="white-hand" class="hand" aria-label="白軍の持ち駒"></div></section>
+    <nav class="left-battle-controls" aria-label="対局補助操作">
+      <button id="undo" type="button" disabled>一手戻る</button>
+      <button id="resign" type="button">Give Up</button>
+    </nav>
+    <section class="message-area text-window" data-window="battle" aria-live="polite"><span class="text-window-art" aria-hidden="true"></span><span id="speaker-name" class="speaker-name" hidden></span><p id="message"></p><small class="dialogue-indicator" hidden>▼</small></section>
+    <nav class="controls" aria-label="対局操作">
+      <button id="help" type="button" aria-label="操作説明" title="操作説明"><span>？</span></button>
+      <button id="toggle-history" type="button" aria-label="棋譜を開く" title="棋譜"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h10v15H7z"/><path d="M9.5 7h5M9.5 10h5M9.5 13h3.5"/><path d="M5 5v15h10"/></svg></button>
+      <button id="back-to-title" type="button" aria-label="タイトルへ戻る" title="タイトルへ戻る"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 5h5v14h-5"/><path d="M11 8 7 12l4 4M7 12h9"/></svg></button>
+    </nav>
+    <div id="first-stage-tutorial" class="first-stage-tutorial" hidden role="dialog" aria-label="UAVの移動操作チュートリアル">
+      <div class="tutorial-window" aria-hidden="true"><div class="tutorial-mini-board"><span></span><span></span><span></span><span></span><span></span><span class="tutorial-destination"></span><span></span><span></span><span></span><span class="tutorial-uav-cell"><img src="asset/pieces/UAV-白.png" alt=""></span><span></span><span></span><span></span><span></span><span></span><span></span><i class="tutorial-pointer"><svg viewBox="0 0 58 72" aria-hidden="true"><path class="hand-palm" d="M15 34V15a5 5 0 0 1 10 0v16-21a5 5 0 0 1 10 0v21-16a5 5 0 0 1 10 0v19-12a5 5 0 0 1 10 0v24c0 15-10 24-25 24h-3C17 70 11 65 7 57L1 45a6 6 0 0 1 11-6l3 6V34Z"/><path class="hand-detail" d="M25 31V16M35 31V17M45 34V24M15 45v8"/></svg></i></div></div>
+    </div>
+    <div id="cutin" class="cutin" hidden aria-live="assertive"><div class="cutin-band"><div id="cutin-copy" class="cutin-copy"><ruby><span id="cutin-text">王に勝利を</span><rt id="cutin-ruby">サージーク</rt></ruby></div><img id="cutin-image" class="cutin-image" alt="" hidden></div></div>
+  </main>
+  <section id="battle-result" class="battle-result" hidden aria-live="assertive">
+    <img id="result-still" class="result-still" alt="" hidden>
+    <div id="still-dialogue" class="still-dialogue text-window" data-window="still" hidden><span class="text-window-art" aria-hidden="true"></span><span id="still-speaker" class="speaker-name"></span><p id="still-text"></p><small class="dialogue-indicator">▼</small></div>
+    <div class="result-card"><div id="victory-burst" class="victory-burst" hidden aria-hidden="true"><i class="victory-rays"></i><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div><p id="result-kicker">BATTLE RESULT</p><h2 id="result-title">勝ち！</h2><p id="result-message"></p><pre id="result-debug" class="result-debug" hidden></pre><div class="result-actions"><button id="retry-stage" type="button" hidden>リトライ</button><button id="result-action" type="button">タイトルへ</button></div></div>
+  </section>
+  <dialog id="promotion-dialog" class="promotion-dialog"><h2 id="promotion-title">昇格先を選択</h2><p>昇格先を選択してください。</p><div id="promotion-options" class="dialog-actions promotion-options"></div></dialog>
+  <dialog id="help-dialog" class="help-dialog"><button id="close-help" class="dialog-close" type="button" aria-label="操作説明を閉じる">×</button><img id="help-guide-image" class="help-guide-image" alt="" hidden><div id="help-page-controls" class="help-page-controls" hidden><button id="help-prev" type="button">‹</button><span id="help-page-status"></span><button id="help-next" type="button">›</button></div></dialog>
+  <dialog id="resign-dialog"><button id="cancel-resign" class="dialog-close" type="button" aria-label="投了確認を閉じる">×</button><h2>投了しますか</h2><p>投了するとプレイヤーの敗北として対局を終了します。</p><div class="dialog-actions"><button id="confirm-resign" class="danger-button" type="button">投了する</button></div></dialog>
+  <dialog id="return-title-dialog"><button id="cancel-return-title" class="dialog-close" type="button" aria-label="タイトルへ戻る確認を閉じる">×</button><h2>タイトルへ戻りますか</h2><p>現在の対局を中断してタイトル画面へ戻ります。敗北としては記録されません。</p><div class="dialog-actions"><button id="confirm-return-title" type="button">戻る</button></div></dialog>
+  <dialog id="history-dialog" class="history-dialog"><button id="close-history" class="dialog-close" type="button" aria-label="棋譜を閉じる">×</button><h2>棋譜 着手履歴</h2><div id="history-list" class="history-list" aria-live="polite"></div><div class="dialog-actions"><button id="copy-history" type="button">テキストをコピー</button></div><p id="copy-status" class="copy-status" aria-live="polite"></p></dialog>
+  <dialog id="debug-dialog"><button id="close-debug-menu" class="dialog-close" type="button" aria-label="デバッグメニューを閉じる">×</button><h2>DEBUG MENU</h2><div class="debug-cpu-controls"><label>対局モード<select id="debug-game-mode"><option value="cpu">CPU対戦</option><option value="local">ローカル2人対戦</option></select></label><label>CPU難易度<select id="debug-cpu-difficulty"><option value="stage">ステージ設定</option><option value="beginner">初級</option><option value="intermediate">中級</option><option value="advanced">上級</option></select></label></div><dl id="cpu-debug-status" class="cpu-debug-status"><dt>難易度</dt><dd data-cpu="difficulty">—</dd><dt>思考時間</dt><dd data-cpu="time">—</dd><dt>探索局面</dt><dd data-cpu="nodes">—</dd><dt>局面評価</dt><dd data-cpu="score">—</dd><dt>表情</dt><dd data-cpu="expression">normal</dd><dt>選択手</dt><dd data-cpu="move">—</dd><dt>最終手</dt><dd data-terminal="move">—</dd><dt>終局理由</dt><dd data-terminal="reason">—</dd><dt>王手状態</dt><dd data-terminal="check">false</dd><dt>合法手数</dt><dd data-terminal="legal">—</dd></dl><div class="debug-menu-grid"><button id="debug-reset" type="button">対局をリセット</button><button id="debug-opening-cutin" type="button">開戦カットイン再生</button><button id="debug-check-cutin" type="button">王手カットイン再生</button><button id="debug-sweat" type="button">焦り＋汗エフェクト</button><button id="debug-tutorial" type="button">チュートリアル表示</button></div></dialog>
+  <dialog id="audio-dialog" class="audio-dialog"><button id="close-audio-settings" class="dialog-close" type="button" aria-label="音声設定を閉じる">×</button><h2>音声設定</h2><label>BGM音量 <output id="bgm-volume-output">70%</output><input id="bgm-volume" type="range" min="0" max="100" step="1" value="70"></label><label>効果音（SE）音量 <output id="se-volume-output">80%</output><input id="se-volume" type="range" min="0" max="100" step="1" value="80"></label><label class="mute-setting"><input id="audio-muted" type="checkbox"> ミュート</label></dialog>
+  <script type="module" src="js/main.js?v=20261123-sweat"></script>
+</body>
+</html>
