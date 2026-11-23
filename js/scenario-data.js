@@ -66,7 +66,7 @@ export const ROUTE_DIALOGUE=Object.freeze({
       {speaker:"hero",text:"シロウズくん？"},
       {speaker:"opponent",text:"ふふ、負かされてしまうとは……君は強いな。"},
       {speaker:"hero",text:"一体、どうされたので？ あの艦棋は何です。"},
-      {speaker:"opponent",text:"つまらない仕掛けさ、負けが込むといたずらに性感を刺激されるのだ。"},
+      {speaker:"opponent",text:"つまらない仕掛けさ、負けが込むといたずらに性感を刺激される。"},
       {speaker:"hero",text:"ははあ、なんと低俗な…………つまり、貴方はそういう類の悪戯を仕掛けたと。私に黙って。"},
       {speaker:"opponent",text:"すまなかった。詫びと言ってはなんだが……この身はきみの好きにしてもいいぞ……♡"},
       {speaker:"hero",text:"全く、勝っても負けても貴方得ではないですか。"}
@@ -88,7 +88,7 @@ return Object.freeze({id,name,hero,protagonistId,titlePortrait:CHARACTERS[protag
 };
 
 export const ROUTES=Object.freeze({
-  shaa:route("shaa","シャアルート","シャア","siro",["28"],"asset/stills/clear-01.webp"),
+  shaa:route("shaa","シャアルート","シロウズ","siro",["28"],"asset/stills/clear-01.webp"),
   sharia:route("sharia","シャリアルート","シャリア","28",["cha"],"asset/stills/clear-02.webp",{cha:"siro"})
 });
 

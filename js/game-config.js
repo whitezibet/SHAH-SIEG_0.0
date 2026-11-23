@@ -121,7 +121,7 @@ export const TEXT_WINDOW_CONFIG = Object.freeze({
     still:Object.freeze({left:"6%",top:"72%",width:"88%",height:"24%",padding:"5.5% 4.5% 3.2%"})
   }),
   speaker:Object.freeze({left:"3%",top:"-12%",width:"28%",height:"18%",fontSize:"clamp(11px,1.25vmin,15px)"}),
-  text:Object.freeze({paddingTop:"0.1%",fontSize:"clamp(18px,1.55vmin,18px)",lineHeight:"1.5"})
+  text:Object.freeze({paddingTop:"0.1%",fontSize:"clamp(10px,1.55vmin,18px)",lineHeight:"1.5"})
 });
 
 export const GAME_UI_CONFIG = Object.freeze({
