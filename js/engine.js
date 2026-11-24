@@ -14,6 +14,7 @@ export const TYPE_NAMES = Object.freeze({
 export const END_REASONS = Object.freeze({
   KING_CAPTURE: "king_capture",
   CHECKMATE: "checkmate",
+  IMMOBILIZATION: "immobilization",
   STALEMATE: "stalemate",
   MOVE_LIMIT: "move_limit",
   RESIGNATION: "resignation",
@@ -33,6 +34,11 @@ const PROMOTIONS = Object.freeze({
 const UAV_PROMOTION_EXCLUSIONS = new Set([TYPES.UAV,TYPES.KING,TYPES.BATTLESHIP,TYPES.ARMORED]);
 const UAV_PROMOTIONS = Object.freeze(Object.values(TYPES).filter(type => !UAV_PROMOTION_EXCLUSIONS.has(type)));
 const WRK_TARGETS = new Set([TYPES.UAV, TYPES.COMMANDER, TYPES.SDOG, TYPES.BM]);
+
+export function promotionTargetsForType(type) {
+  if (type === TYPES.UAV) return [...UAV_PROMOTIONS];
+  return PROMOTIONS[type] ? [PROMOTIONS[type]] : [];
+}
 
 const inside = (row, col) => row >= 0 && row < 10 && col >= 0 && col < 10;
 const other = side => side === SIDES.WHITE ? SIDES.BLACK : SIDES.WHITE;
@@ -180,22 +186,25 @@ export function isInCheck(state, side) {
   return king ? isSquareAttacked(state, king.row, king.col, other(side)) : true;
 }
 
-function hasCommander(state, side) {
+export function hasCommander(state, side) {
   return state.board.some(row => row.some(p => p && !p.obstacle && p.side === side && p.type === TYPES.COMMANDER));
 }
 
-function obstructUavsWithoutCommander(state, side) {
-  if (hasCommander(state, side)) return;
+function syncUavsWithCommander(state, side) {
+  const active = hasCommander(state, side);
   state.board.forEach(row => row.forEach(p => {
-    if (p && p.side === side && p.type === TYPES.UAV && !p.promoted) p.obstacle = true;
+    if (p && p.side === side && p.type === TYPES.UAV && !p.promoted) p.obstacle = !active;
   }));
 }
 
+// 既存テスト・デバッグ互換用。現在は石化だけでなく司令復帰時の再稼働も同期する。
+function obstructUavsWithoutCommander(state, side) { syncUavsWithCommander(state, side); }
+
 function promotionOptions(piece, toRow) {
   if (!piece || piece.promoted || toRow !== farRank(piece.side)) return [];
-  if (piece.type === TYPES.UAV) return UAV_PROMOTIONS;
-  const promotedType=PROMOTIONS[piece.type];
-  return promotedType?[null,promotedType]:[];
+  const targets=promotionTargetsForType(piece.type);
+  if (piece.type === TYPES.UAV) return targets;
+  return targets.length?[null,...targets]:[];
 }
 
 export function promotionChoicesForMove(state,move) {
@@ -237,7 +246,7 @@ function applyUnchecked(state, move, promotionChoice = null) {
   }
   next.enPassant = null;
   if (move.doubleStep) next.enPassant = { row: (move.from.row + move.to.row) / 2, col: move.to.col, side: moving.side };
-  obstructUavsWithoutCommander(next, SIDES.WHITE); obstructUavsWithoutCommander(next, SIDES.BLACK);
+  syncUavsWithCommander(next, SIDES.WHITE); syncUavsWithCommander(next, SIDES.BLACK);
   next.plyCount += 1; next.turn = other(next.turn);
   if (captured?.type === TYPES.KING) next.status = { kind: "win", winner: moving.side, reason: END_REASONS.KING_CAPTURE, inCheck: false, legalMoveCount: 0, message: `${moving.side === SIDES.WHITE ? "白軍" : "黒軍"}が王督を捕獲しました` };
   return next;
@@ -283,7 +292,8 @@ function dropAllowedRow(side, row) {
 
 export function legalDropsFor(state, handIndex) {
   const side = state.turn, piece = state.hands[side][handIndex];
-  if (!piece || !hasCommander(state, side) || state.status.kind !== "playing") return [];
+  if (!piece || state.status.kind !== "playing") return [];
+  if (piece.type === TYPES.UAV && !hasCommander(state, side)) return [];
   const drops = [];
   for (let row = 0; row < 10; row++) for (let col = 0; col < 10; col++) {
     if (!state.board[row][col] && dropAllowedRow(side, row)) {
@@ -311,7 +321,7 @@ function finalizeStatus(state) {
   }
   if (!moves.length) state.status = inCheck
     ? { kind: "win", winner: other(state.turn), reason: END_REASONS.CHECKMATE, inCheck: true, legalMoveCount: 0, message: "詰みです" }
-    : { kind: "draw", winner: null, reason: END_REASONS.STALEMATE, inCheck: false, legalMoveCount: 0, message: "合法手がないため引き分けです" };
+    : { kind: "win", winner: other(state.turn), reason: END_REASONS.IMMOBILIZATION, inCheck: false, legalMoveCount: 0, message: "行動可能な手がないため敗北です" };
   else state.status = { kind: "playing", winner: null, reason: null, inCheck, legalMoveCount: moves.length, message: inCheck ? "王手です" : `${state.turn === SIDES.WHITE ? "白軍" : "黒軍"}の手番です` };
   return state;
 }
@@ -341,4 +351,4 @@ export class ShahSiegGame {
   restart() { this.state = clone(this.initial); this.history = []; }
 }
 
-export const __testing = { makePiece, applyUnchecked, obstructUavsWithoutCommander, hasCommander };
+export const __testing = { makePiece, applyUnchecked, obstructUavsWithoutCommander, syncUavsWithCommander, hasCommander };

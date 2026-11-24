@@ -31,8 +31,14 @@ test("CPU側の着手による王手も同じ演出要求になる",()=>{
   assert.equal(game.state.status.kind,"playing");assert.equal(game.state.status.inCheck,true);assert.deepEqual(terminalSequence(game.state.status),["check_cutin"]);
 });
 
-test("合法手なしで王手でなければステイルメイト",()=>{
+test("王手なしでも合法手がなければ手番側の行動不能敗北",()=>{
   const state=emptyState();put(state,"A0",TYPES.KING,SIDES.BLACK);put(state,"B8",TYPES.KING,SIDES.WHITE);put(state,"C9",TYPES.HEAVY_CRUISER,SIDES.WHITE);put(state,"J1",TYPES.COMMANDER,SIDES.WHITE);
   const game=new ShahSiegGame(state);play(game,"J1","I1");
-  assert.equal(game.state.status.kind,"draw");assert.equal(game.state.status.reason,END_REASONS.STALEMATE);assert.equal(game.state.status.inCheck,false);assert.equal(game.state.status.legalMoveCount,0);assert.deepEqual(terminalSequence(game.state.status),["result"]);
+  assert.equal(game.state.status.kind,"win");assert.equal(game.state.status.winner,SIDES.WHITE);assert.equal(game.state.status.reason,END_REASONS.IMMOBILIZATION);assert.equal(game.state.status.inCheck,false);assert.equal(game.state.status.legalMoveCount,0);assert.deepEqual(terminalSequence(game.state.status),["result"]);
+});
+
+test("盤上で動けなくても合法な再配置があれば行動不能敗北にならない",()=>{
+  const state=emptyState();put(state,"A0",TYPES.KING,SIDES.BLACK);put(state,"B8",TYPES.KING,SIDES.WHITE);put(state,"C9",TYPES.HEAVY_CRUISER,SIDES.WHITE);put(state,"J1",TYPES.COMMANDER,SIDES.WHITE);state.hands.black.push(__testing.makePiece(TYPES.BM,SIDES.BLACK,"black-hand-bm"));
+  const game=new ShahSiegGame(state);play(game,"J1","I1");
+  assert.equal(game.state.status.kind,"playing");assert.equal(game.state.turn,SIDES.BLACK);assert(game.state.status.legalMoveCount>0);assert(game.getAllLegalMoves().some(move=>move.kind==="drop"));
 });

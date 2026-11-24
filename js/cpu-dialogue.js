@@ -6,8 +6,8 @@ export const CPU_DIALOGUE = Object.freeze({
     underCheck:Object.freeze([])
   }),
   characters:Object.freeze({
-    "28":Object.freeze({anxious:Object.freeze(["ご容赦を"]),underCheck:Object.freeze(["そうなりますか…","おやおや……","だめですよ"])}),
-    cha:Object.freeze({anxious:Object.freeze(["やるな、君…"]),underCheck:Object.freeze(["冗談ではない…","そうはさせん","しつこい男だ"])}),
+    "28":Object.freeze({anxious:Object.freeze(["ご容赦を"]),underCheck:Object.freeze(["そうなりますか…","おやおや……","だめですよ","通せませんね"])}),
+    cha:Object.freeze({anxious:Object.freeze(["やるな、君…"]),underCheck:Object.freeze(["冗談ではない…","そうはさせん","しつこい男だ","まだ終わらんよ"])}),
     siro:Object.freeze({anxious:Object.freeze([]),underCheck:Object.freeze([])}),
     qwa:Object.freeze({anxious:Object.freeze([]),underCheck:Object.freeze([])})
   })

@@ -16,9 +16,9 @@ export const CHARACTERS=Object.freeze(Object.fromEntries(["28","34","26","cha","
 export const ROUTE_DIALOGUE=Object.freeze({
   shaa:Object.freeze({
     preBattleScene:Object.freeze([
-      {speaker:"opponent",text:"シロウズくんではないですか。今日はいったいどうされたので？",expression:"n"},
+      {speaker:"opponent",text:"おや、シロウズくんではないですか。今日はいったいどうされたので？",expression:"n"},
       {speaker:"hero",text:"面白いものを拾ってな。きみと遊ぼうと思って。",expression:"n"},
-      {speaker:"opponent",text:"ははあ、艦棋ですか。大佐とは戦時中随分嗜みましたが…シロウズくんとは初めて指しますね。",expression:"n"},
+      {speaker:"opponent",text:"ははあ、艦棋ですか。大佐とは戦時中随分嗜みましたが……シロウズくんとは初めて指しますね。",expression:"n"},
       {speaker:"hero",text:"私も艦棋は久方ぶりだが……手加減無用だ。いいな？",expression:"n"},
       {speaker:"opponent",text:"おやおや、お気づきですか。悪い顔をしていらっしゃいます。何をさせられるやら。",expression:"n"}
     ]),

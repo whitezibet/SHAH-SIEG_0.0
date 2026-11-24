@@ -43,6 +43,17 @@ test("候補生成は持ち駒再配置とUAV昇格先を含む",()=>{
   assert(!promotions.some(candidate=>candidate.promotionChoice===null));
 });
 
+test("CPUは司令喪失後もUAV以外を再配置でき、UAVは再配置しない",()=>{
+  const state=emptyState();put(state,"E1",TYPES.KING,SIDES.WHITE);put(state,"E0",TYPES.KING,SIDES.BLACK);state.hands.black.push(__testing.makePiece(TYPES.UAV,SIDES.BLACK,"hand-uav"),__testing.makePiece(TYPES.BM,SIDES.BLACK,"hand-bm"));
+  const drops=expandLegalCandidates(state).filter(candidate=>candidate.move.kind==="drop");
+  assert(drops.some(candidate=>candidate.move.pieceType===TYPES.BM));assert(!drops.some(candidate=>candidate.move.pieceType===TYPES.UAV));
+});
+
+test("CPU探索内でも司令再配置により石化UAVが再稼働する",()=>{
+  const state=emptyState();put(state,"E1",TYPES.KING,SIDES.WHITE);put(state,"E0",TYPES.KING,SIDES.BLACK);put(state,"A8",TYPES.UAV,SIDES.BLACK,{obstacle:true,moved:true});state.hands.black.push(__testing.makePiece(TYPES.COMMANDER,SIDES.BLACK,"hand-commander"));
+  const candidate=expandLegalCandidates(state).find(item=>item.move.kind==="drop"&&item.move.pieceType===TYPES.COMMANDER);assert(candidate);const next=applyCandidate(state,candidate),uav=next.board[displayToIndex("A8").row][displayToIndex("A8").col];assert.equal(uav.obstacle,false);assert.equal(uav.moved,true);
+});
+
 test("CPU候補は軽巡の空母成りと不成を別々に評価する",()=>{const state=emptyState();put(state,"A0",TYPES.KING,SIDES.WHITE);put(state,"J1",TYPES.KING,SIDES.BLACK);put(state,"E2",TYPES.LIGHT_CRUISER,SIDES.BLACK);const from=displayToIndex("E2"),to=displayToIndex("E1"),candidates=expandLegalCandidates(state).filter(c=>c.move.kind==="move"&&c.move.from.row===from.row&&c.move.from.col===from.col&&c.move.to.row===to.row&&c.move.to.col===to.col);assert.deepEqual(new Set(candidates.map(c=>c.promotionChoice)),new Set([null,TYPES.CARRIER]));const promoted=applyCandidate(state,candidates.find(c=>c.promotionChoice===TYPES.CARRIER)).board[to.row][to.col];const declined=applyCandidate(state,candidates.find(c=>c.promotionChoice===null)).board[to.row][to.col];assert.equal(promoted.type,TYPES.CARRIER);assert.equal(declined.type,TYPES.LIGHT_CRUISER);});
 test("CPU候補のS-Dogは空母成りと不成を含み重巡成りを含まない",()=>{const state=emptyState();put(state,"A0",TYPES.KING,SIDES.WHITE);put(state,"J1",TYPES.KING,SIDES.BLACK);put(state,"E2",TYPES.SDOG,SIDES.BLACK);const from=displayToIndex("E2"),to=displayToIndex("E1"),choices=expandLegalCandidates(state).filter(c=>c.move.from?.row===from.row&&c.move.to.row===to.row).map(c=>c.promotionChoice);assert.deepEqual(new Set(choices),new Set([null,TYPES.CARRIER]));assert(!choices.includes(TYPES.HEAVY_CRUISER));});
 

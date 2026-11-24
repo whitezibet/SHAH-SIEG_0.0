@@ -1,4 +1,4 @@
-import { ShahSiegGame, SIDES, TYPES, allLegalMoves, isInCheck, indexToDisplay, promotionChoicesForMove } from "./engine.js";
+import { ShahSiegGame, SIDES, TYPES, allLegalMoves, hasCommander, isInCheck, indexToDisplay, promotionChoicesForMove } from "./engine.js";
 
 export const CPU_DIFFICULTIES = Object.freeze({
   beginner: Object.freeze({ id:"beginner", label:"入門", maxDepth:1, timeLimitMs:140, maxCandidates:24, randomness:0.82, advantageousMoveChance:0.20, capturePriority:0.30, checkPriority:0.18 }),
@@ -31,7 +31,7 @@ export function applyCandidate(state, candidate) {
 }
 
 const MOBILITY_WEIGHT=Object.freeze({uav:2,wrk:4,heavyCruiser:7,ffh:8,bm:5,sdog:6,lightCruiser:5,carrier:6,king:4,commander:4,battleship:9,armored:10});
-function sideMobility(state,side){let score=0;for(let row=0;row<10;row++)for(let col=0;col<10;col++){const piece=state.board[row][col];if(piece?.side!==side||piece.obstacle)continue;score+=MOBILITY_WEIGHT[piece.type]??3;for(const[dr,dc]of[[-1,0],[1,0],[0,-1],[0,1]]){const target=state.board[row+dr]?.[col+dc];if(!target||target.side!==side)score+=.5;}}return score+state.hands[side].length*2;}
+function sideMobility(state,side){let score=0;for(let row=0;row<10;row++)for(let col=0;col<10;col++){const piece=state.board[row][col];if(piece?.side!==side||piece.obstacle)continue;score+=MOBILITY_WEIGHT[piece.type]??3;for(const[dr,dc]of[[-1,0],[1,0],[0,-1],[0,1]]){const target=state.board[row+dr]?.[col+dc];if(!target||target.side!==side)score+=.5;}}const commanderPresent=hasCommander(state,side),usableHandCount=state.hands[side].filter(piece=>piece.type!==TYPES.UAV||commanderPresent).length;return score+usableHandCount*2;}
 
 function kingShelter(state, side) {
   let king = null;

@@ -63,6 +63,11 @@
       <button id="toggle-history" type="button" aria-label="棋譜を開く" title="棋譜"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h10v15H7z"/><path d="M9.5 7h5M9.5 10h5M9.5 13h3.5"/><path d="M5 5v15h10"/></svg></button>
       <button id="back-to-title" type="button" aria-label="タイトルへ戻る" title="タイトルへ戻る"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 5h5v14h-5"/><path d="M11 8 7 12l4 4M7 12h9"/></svg></button>
     </nav>
+    <aside id="piece-guide" class="piece-guide" hidden aria-label="駒の移動範囲早見表">
+      <button id="piece-guide-handle" class="piece-guide-handle" type="button" aria-expanded="false" aria-controls="piece-guide-drawer" aria-label="駒早見表を開く"><span aria-hidden="true"></span></button>
+      <div id="piece-guide-drawer" class="piece-guide-drawer"><div id="piece-guide-buttons" class="piece-guide-buttons" role="list" aria-label="駒一覧"></div></div>
+      <section id="piece-guide-detail" class="piece-guide-detail" hidden aria-live="polite"><p class="piece-guide-forward">前方</p><h2 id="piece-guide-name"></h2><div id="piece-guide-movement"></div><p id="piece-guide-note"></p></section>
+    </aside>
     <div id="first-stage-tutorial" class="first-stage-tutorial" hidden role="dialog" aria-label="UAVの移動操作チュートリアル">
       <div class="tutorial-window" aria-hidden="true"><div class="tutorial-mini-board"><span></span><span></span><span></span><span></span><span></span><span class="tutorial-destination"></span><span></span><span></span><span></span><span class="tutorial-uav-cell"><img src="asset/pieces/UAV-白.png" alt=""></span><span></span><span></span><span></span><span></span><span></span><span></span><i class="tutorial-pointer"><svg viewBox="0 0 58 72" aria-hidden="true"><path class="hand-palm" d="M15 34V15a5 5 0 0 1 10 0v16-21a5 5 0 0 1 10 0v21-16a5 5 0 0 1 10 0v19-12a5 5 0 0 1 10 0v24c0 15-10 24-25 24h-3C17 70 11 65 7 57L1 45a6 6 0 0 1 11-6l3 6V34Z"/><path class="hand-detail" d="M25 31V16M35 31V17M45 34V24M15 45v8"/></svg></i></div></div>
     </div>
